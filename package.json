@@ -1,4 +1,7 @@
 {
+  "name": "phaser-navmesh-plugin-mastg",
+  "author": "A.G.",
+  "version": "0.0.1",
   "private": false,
   "workspaces": [
     "packages/*"
@@ -37,5 +40,9 @@
   },
   "prettier": {
     "printWidth": 100
-  }
+  },
+  "keywords": [
+    "path finding",
+    "phaser"
+  ]
 }
