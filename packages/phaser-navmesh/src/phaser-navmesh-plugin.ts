@@ -1,10 +1,10 @@
-import Phaser from "phaser";
-import PhaserNavMesh from "./phaser-navmesh";
-import { buildPolysFromGridMap } from "navmesh/src/map-parsers";
+import Phaser from 'phaser';
+import PhaserNavMesh from './phaser-navmesh';
+import { buildPolysFromGridMap } from 'navmesh/src/map-parsers';
 
 /**
  * This class can create navigation meshes for use in Phaser 3. The navmeshes can be constructed
- * from convex polygons embedded in a Tiled map. The class that conforms to Phaser 3's plugin
+ * from convex polygons embedded in a Tiled map. The class conforms to Phaser 3's plugin
  * structure.
  *
  * @export
@@ -23,19 +23,21 @@ export default class PhaserNavMeshPlugin extends Phaser.Plugins.ScenePlugin {
 
   /** Phaser.Scene lifecycle event */
   public boot() {
-    const emitter = this.systems.events;
-    emitter.once("destroy", this.destroy, this);
+    const emitter = this.systems?.events;
+    if (emitter) {
+      emitter.once('destroy', this.destroy, this);
+    }
   }
 
   /** Phaser.Scene lifecycle event - noop in this plugin, but still required. */
   public init() {}
 
-  /** Phaser.Scene lifecycle event - noop in this plugin, but still required.*/
+  /** Phaser.Scene lifecycle event - noop in this plugin, but still required. */
   public start() {}
 
   /** Phaser.Scene lifecycle event - will destroy all navmeshes created. */
   public destroy() {
-    this.systems.events.off("boot", this.boot, this);
+    this.systems?.events.off('boot', this.boot, this);
     this.removeAllMeshes();
   }
 
@@ -58,7 +60,7 @@ export default class PhaserNavMeshPlugin extends Phaser.Plugins.ScenePlugin {
   }
 
   /**
-   * This method attempts to automatically build a navmesh based on the give tilemap and tilemap
+   * This method attempts to automatically build a navmesh based on the given tilemap and tilemap
    * layer(s). It attempts to respect the x/y position and scale of the layer(s). Important note: it
    * doesn't support rotation/flip or multiple layers that have different positions/scales. This
    * method is a bit experimental. It will generate a valid mesh, but it won't necessarily be
@@ -162,7 +164,7 @@ export default class PhaserNavMeshPlugin extends Phaser.Plugins.ScenePlugin {
       );
     }
 
-    const mesh = new PhaserNavMesh(this, this.scene, key, polygons, 0);
+    const mesh = new PhaserNavMesh(this, this.scene!, key, polygons, 0);
     this.phaserNavMeshes[key] = mesh;
 
     return mesh;
@@ -212,7 +214,7 @@ export default class PhaserNavMeshPlugin extends Phaser.Plugins.ScenePlugin {
       ];
     });
 
-    const mesh = new PhaserNavMesh(this, this.scene, key, polygons, meshShrinkAmount);
+    const mesh = new PhaserNavMesh(this, this.scene!, key, polygons, meshShrinkAmount);
 
     this.phaserNavMeshes[key] = mesh;
 

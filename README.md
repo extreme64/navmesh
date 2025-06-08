@@ -110,10 +110,6 @@ import { PhaserNavMeshPlugin } from "phaser-navmesh/src";
 
 Creating a navigation mesh is the process of defining the walkable areas within you world as a series of polygons. If you are using a tilemap, then you can probably get away with just auto-generating the mesh using [buildMeshFromTilemap](https://www.mikewesthad.com/navmesh/docs/classes/phaser_navmesh.phasernavmeshplugin.html#buildmeshfromtilemap) in Phaser 3 (or if you are using NavMesh without the Phaser wrapper, see [buildPolysFromGridMap](https://www.mikewesthad.com/navmesh/docs/modules/navmesh.html#buildpolysfromgridmap)).
 
-If you've got a more complex situation, you can use a tilemap editor like Tiled to create your mesh
-and load it into the game. See
-[guide](https://github.com/mikewesthad/navmesh/blob/master/tiled-navmesh-guide.md).
-
 (Note: the current version of the library only supports [convex polygons](https://www.sparknotes.com/math/geometry1/polygons/section2/). There are libraries like [poly-decom.js](https://github.com/schteppe/poly-decomp.js/) for decomposing a concave polygon into easier to manage convex polygons. It's on the to do list to handle any polygon, but I've found that automatically decomposing polygons leads to worse performance than hand-mapping the levels with convex polygons.)
 
 ## Usage
@@ -232,7 +228,7 @@ navMesh.debugDrawPath(path, 0xffd900);
 
 ### phaser2-navmesh ([API reference](https://www.mikewesthad.com/navmesh/docs/modules/phaser2_navmesh.html))
 
-If you are working with Phaser 2, you can use the phaser2-navmesh package, which provides a game plugin. See this [example](https://github.com/mikewesthad/navmesh/tree/master/packages/examples-phaser2/src) for more complete usage. You can also look at the [previous section](#phaser-navmesh) for Phaser usage.
+If you are working with Phaser 2, you can use the phaser2-navmesh package, which provides a game plugin. See this [example](https://github.com/extreme64/navmesh/tree/master/packages/examples-phaser2/src) for more complete usage. You can also look at the [previous section](#phaser-navmesh) for Phaser usage.
 
 ## Performance Comparison
 
@@ -245,7 +241,7 @@ Comparing this navmesh plugin against:
 
 Performance depends on the size of the area that needs to be searched. Finding for a path between points that are 50 pixels away is (generally) going to be much faster than finding a path between points that are 5000 pixels away.
 
-Details (see [src/library/performance](https://github.com/mikewesthad/navmesh/tree/master/src/examples/performance)):
+Details (see [src/library/performance](https://github.com/extreme64/navmesh/tree/master/src/examples/performance)):
 
 ```
 Performance Comparison, 100000 iterations, 30x30 tilemap
@@ -275,7 +271,7 @@ Long paths (600 pixels and greater length), average time per iteration:
 
 ## Community Examples
 
-- [TypeScript Server Example](https://colyseus-unity3d-navmesh.firebaseapp.com) - Right click to move the agent, see discussion thread [here](https://github.com/mikewesthad/navmesh/issues/11#issuecomment-595211483) with links to source code.
+- [TypeScript Server Example](https://colyseus-unity3d-navmesh.firebaseapp.com)
 
 ## Development
 
@@ -316,11 +312,24 @@ A few tips, because Lerna + Yarn is complicated, and I keep forgetting these:
   - Example: `yarn workspaces build`
   - `lerna run --parallel watch`
 
+## To Dos
+
+- Features
+  - Allow non-square navmesh polygons from Tiled - ideally, any convex shape.
+  - Tilemap that is larger than the screen
+  - Autotessalation version of the lib & try libtess in quad mode.
+  - The astar heuristic & cost functions don't always produce the shortest path. Implement incomplete funneling while building the astar path?
+  - The navmesh assumes any polygon can reach any other polygon. This probably should be extended to put connected polygons into groups like patroljs.
+  - Factor in the layer position / scale / rotation
+  - Better warnings: empty map, warn on disconnected map, warn if polygons are malformed.
+- Testing
+- Research
+  - Optimization tricks to do when dealing with certain types of shapes. E.g. we are using axis-aligned boxes for the polygons and it is dead simple to calculate if a point is inside one of those...
+  - Investigate [Points-of-Visibility](http://www.david-gouveia.com/portfolio/pathfinding-on-a-2d-polygonal-map/) pathfinding to compare speed
+
 ## Changelogs
 
-- [Phaser NavMesh (for Phaser v3)](https://github.com/mikewesthad/navmesh/blob/master/packages/phaser-navmesh/README.md)
-- [Phaser 2 NavMesh](https://github.com/mikewesthad/navmesh/blob/master/packages/phaser2-navmesh/README.md)
-- [NavMesh](https://github.com/mikewesthad/navmesh/blob/master/packages/navmesh/README.md)
+- [Phaser NavMesh (for Phaser v3)](https://github.com/extreme64/navmesh/blob/master/packages/phaser-navmesh/README.md)
 
 ## References
 
@@ -332,17 +341,3 @@ Helpful resources used while building this plugin:
   - [Simple Stupid Funnel Algorithm](http://digestingduck.blogspot.com/2010/03/simple-stupid-funnel-algorithm.html)
 - [Advice on astar heuristics](http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html)
 
-## To Dos
-
-- Features
-  - Allow non-square navmesh polygons from Tiled - ideally, any convex shape.
-  - Reimplement the autotessalation version of the lib & try libtess in quad mode.
-  - The astar heuristic & cost functions need another pass. They don't always produce the shortest path. Implement incomplete funneling while building the astar path?
-  - The navmesh assumes any polygon can reach any other polygon. This probably should be extended to put connected polygons into groups like patroljs.
-  - Better warnings for devs - warn on empty map, warn on disconnected map, warn if polygons are malformed.
-  - Factor in the layer position / scale / rotation
-- Testing
-  - Check against tilemap that is larger than the screen
-- Research
-  - There are probably optimization tricks to do when dealing with certain types of shapes. E.g. we are using axis-aligned boxes for the polygons and it is dead simple to calculate if a point is inside one of those...
-  - Investigate [Points-of-Visibility](http://www.david-gouveia.com/portfolio/pathfinding-on-a-2d-polygonal-map/) pathfinding to compare speed
